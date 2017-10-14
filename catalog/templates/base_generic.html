@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    
+    {% block title %}<title>Local Library</title>{% endblock %}
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    
+    <!-- Add additional CSS in static file -->
+    {% load static %}
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  </head>
+  <header>
+    <!-- Fixed navbar -->
+      <nav class="navbar navbar-toggleable-md navbar-inverse fixed-top bg-inverse">
+        <div class="container">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="{% url 'index' %}">Library</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="{% url 'books' %}">Books</a></li>
+              <li><a href="{% url 'authors' %}">Authors</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Genre <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Action</a></li>
+                  <li><a href="#">Another action</a></li>
+                  <li><a href="#">Something else here</a></li>
+                  <li role="separator" class="divider"></li>
+                  <li class="dropdown-header">Nav header</li>
+                  <li><a href="#">Separated link</a></li>
+                  <li><a href="#">One more separated link</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </nav>
+  </header>
+
+  <body>
+
+    <div class="container-fluid">
+
+      <div class="row">
+        <div class="col-sm-2">
+        {% block sidebar %}
+        <ul class="sidebar-nav">
+            <li><a href="{% url 'index' %}">Home</a></li>
+            <li><a href="{% url 'books' %}">All books</a></li>
+            <li><a href="{% url 'authors' %}">All authors</a></li>
+            <br>
+            {% if user.is_authenticated %}
+             <li>User: {{ user.get_username }}</li>
+             <li><a href="{% url 'my-borrowed' %}">My Borrowed</a></li>
+             <!-- <li><a href="{% url 'logout'%}?next={{request.path}}">Logout</a></li> -->
+             <li><a href="{% url 'logout'%}">Logout</a></li> 
+           {% else %}
+             <!-- <li><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>  -->
+             <li><a href="{% url 'login'%}">Login</a></li>   
+           {% endif %}
+
+           {% if user.is_superuser %}
+           <br>
+           <div class="alert alert-success" role="alert">
+            <p>You are logged in as {{user.first_name}} you are allowed for changing content.</p>
+            </div>
+            <li>Staff</li>
+            <li><a href="{% url 'all-borrowed' %}">All Borrowed</a></li>
+          {% endif %}
+            
+        </ul>
+       {% endblock %}
+        </div>
+        <div class="col-sm-10 ">
+        {% block content %}{% endblock %}
+    
+        {% block pagination %}
+          {% if is_paginated %}
+              <div class="pagination">
+                  <span class="page-links">
+                      {% if page_obj.has_previous %}
+                          <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}">previous</a>
+                      {% endif %}
+                      <span class="page-current">
+                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                      </span>
+                      {% if page_obj.has_next %}
+                          <a href="{{ request.path }}?page={{ page_obj.next_page_number }}">next</a>
+                      {% endif %}
+                  </span>
+              </div>
+          {% endif %}
+        {% endblock %}
+        </div>
+      </div>
+
+    </div>
+    <!-- jQuery first, then Tether, then Bootstrap JS. -->
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="{% static 'js/tether.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/custom.js' %}"></script>
+  </body>
+</html>

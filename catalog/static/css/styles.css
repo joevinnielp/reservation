@@ -1,0 +1,12 @@
+.sidebar-nav {
+    margin-top: 20px;
+    padding: 0;
+    list-style: none;
+}
+
+/* Navigation Setup */
+.navbar {
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+}
